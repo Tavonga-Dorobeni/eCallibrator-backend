@@ -2,8 +2,6 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
-const Applicant = db.applicant;
-const Recruiter = db.recruiter;
 
 const Op = db.Sequelize.Op;
 
@@ -24,20 +22,14 @@ exports.signup = (req, res) => {
             },
           },
         }).then((roles) => {
-          if(req.body.roles.includes("applicant")){
-            Applicant.create({UserID: user.id, FirstName: user.username, Email: user.email});
-          } else if(req.body.roles.includes("recruiter")){
-            Recruiter.create({UserID: user.id, FirstName: user.username})
-          }
           user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
+            res.send({ usr: user, message: "User was registered successfully!" });
           });
         });
       } else {
         // user role = 1
-        Applicant.create({UserID: user.id, FirstName: user.username, Email: user.email});
         user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
+          res.send({ usr: user, message: "User was registered successfully!" });
         });
       }
     })
